@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Parcelable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -42,7 +43,9 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,6 +53,7 @@ import java.util.List;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks {
 
     private GoogleMap mMap;
+    public GamesDatabase dataSource;
     private MarkerOptions myMarker;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -62,11 +66,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        dataSource = new GamesDatabase(this);
+        dataSource.open();
+        List<Comment> values = dataSource.getAllComments();
+        String[] array = new String[values.size()];
+        int index = 0;
+        for (Object value : values) {
+            array[index] = value.toString();
+            index++;
+        }
+        current_matches = Arrays.asList(array);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
-        current_matches.add("Adam Crabtree, 8:00 PM");
 
       mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -131,10 +144,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         {
 
             public boolean onMarkerClick(Marker arg0) {
-                if(createMatch=true) {
+                if(createMatch==true) {
                     if (arg0.getTitle().equals("Hello world")) {
                         launchCreateMatch();
+                        createMatch = false;
+                        return true;
                     }
+                }
+                if(createMatch==false){
+                    Intent expandedMatchViewIntent = new Intent(MapsActivity.this, ExpandedMatchView.class);
+                    expandedMatchViewIntent.putExtra("current_matches", (Serializable) current_matches);
+                    startActivity(expandedMatchViewIntent);
+                    return true;
                 }
                 return true;
             }

@@ -18,15 +18,15 @@
         android:layout_alignParentEnd="true" />
 
     <Button
-        android:text="Create Match"
+        android:id="@+id/confirm_create_match"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button2"
-        android:layout_below="@+id/timePicker"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="11dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/timePicker"
+        android:layout_marginTop="11dp"
+        android:text="Create Match" />
 
 </RelativeLayout>
